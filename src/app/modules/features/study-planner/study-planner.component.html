@@ -1,0 +1,234 @@
+<div class="study-planner-container">
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="back-btn" routerLink="/dashboard">
+                    <i class="back-icon">←</i>
+                    <span>Back to Dashboard</span>
+                </div>
+                <span class="page-title">Study Planner</span>
+
+                <p class="page-subtitle">
+                    Organize your study sessions and goals efficiently.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-section">
+            <div class="tabs">
+                <button class="tab" [class.active]="viewMode === 'calendar'" (click)="viewMode = 'calendar'">Calendar
+                    View</button>
+                <button class="tab" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">List View</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Calendar View -->
+            <div *ngIf="viewMode === 'calendar'" class="calendar-view">
+                <div class="calendar-header">
+                    <button class="nav-btn" (click)="prevMonth()">&lt;</button>
+                    <span class="calendar-title">{{ selectedDate | date: 'MMMM yyyy' }}</span>
+                    <button class="nav-btn" (click)="nextMonth()">&gt;</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-day calendar-weekday"
+                        *ngFor="let wd of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']">{{ wd }}</div>
+                    <ng-container *ngFor="let day of getDaysInMonth()">
+                        <div class="calendar-day" [class.today]="isToday(day)"
+                            [class.selected]="day.toDateString() === selectedDate.toDateString()"
+                            [class.has-sessions]="getSessionsForDate(day).length > 0"
+                            (click)="selectedDate = day; filterSessions();">
+                            <div class="day-number">{{ day.getDate() }}</div>
+                            <div class="day-sessions">
+                                <span *ngFor="let session of getSessionsForDate(day)" class="session-dot"
+                                    [style.background]="session.color" title="{{ session.title }}"></span>
+                                <span *ngIf="getSessionsForDate(day).length > 3" class="more-sessions">+{{
+                                    getSessionsForDate(day).length - 3 }}</span>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <!-- Responsive grid for forms and goals -->
+                <div class="content-grid" style="margin-top:2rem;">
+                    <!-- Add/Edit Session Form -->
+                    <div class="form-card">
+                        <div class="section-header">
+                            <span class="section-title">{{ isEditingSession ? 'Edit' : 'Add' }} Study Session</span>
+                        </div>
+                        <form [formGroup]="sessionForm" (ngSubmit)="onSubmitSession()" class="session-form">
+                            <div class="form-group">
+                                <label class="form-label">Title</label>
+                                <input class="form-input" formControlName="title" placeholder="Session Title" />
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Subject</label>
+                                    <select class="form-select" formControlName="subject">
+                                        <option value="" disabled>Select Subject</option>
+                                        <option *ngFor="let subject of subjects" [value]="subject">{{ subject }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Duration (minutes)</label>
+                                    <input class="form-input" type="number" formControlName="duration" min="15"
+                                        max="480" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Priority</label>
+                                    <select class="form-select" formControlName="priority">
+                                        <option *ngFor="let p of priorities" [value]="p.value">{{ p.label }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Date</label>
+                                    <input class="form-input" type="date" formControlName="scheduledDate" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Start Time</label>
+                                    <input class="form-input" type="time" formControlName="startTime" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" formControlName="description"
+                                    placeholder="Description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Color</label>
+                                <select class="form-select" formControlName="color">
+                                    <option *ngFor="let c of colors" [value]="c.value">{{ c.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary" type="submit">{{ isEditingSession ? 'Update' : 'Add' }}
+                                    Session</button>
+                                <button class="btn btn-secondary" type="button"
+                                    (click)="resetSessionForm()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Add/Edit Goal Form -->
+                    <div class="form-card">
+                        <div class="section-header">
+                            <span class="section-title">{{ isEditingGoal ? 'Edit' : 'Add' }} Study Goal</span>
+                        </div>
+                        <form [formGroup]="goalForm" (ngSubmit)="onSubmitGoal()" class="goal-form">
+                            <div class="form-group">
+                                <label class="form-label">Title</label>
+                                <input class="form-input" formControlName="title" placeholder="Goal Title" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" formControlName="description"
+                                    placeholder="Description"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Target Date</label>
+                                    <input class="form-input" type="date" formControlName="targetDate" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Subject</label>
+                                    <select class="form-select" formControlName="subject">
+                                        <option value="" disabled>Select Subject</option>
+                                        <option *ngFor="let subject of subjects" [value]="subject">{{ subject }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Color</label>
+                                <select class="form-select" formControlName="color">
+                                    <option *ngFor="let c of colors" [value]="c.value">{{ c.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary" type="submit">{{ isEditingGoal ? 'Update' : 'Add' }}
+                                    Goal</button>
+                                <button class="btn btn-secondary" type="button"
+                                    (click)="resetGoalForm()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Study Goals List -->
+                    <div class="form-card">
+                        <div class="section-header">
+                            <span class="section-title">Study Goals</span>
+                        </div>
+                        <div class="goals-list">
+                            <div *ngIf="studyGoals.length === 0">No study goals yet.</div>
+                            <div class="goal-item" *ngFor="let goal of studyGoals; trackBy: trackByGoalId"
+                                [style.borderLeftColor]="goal.color">
+                                <div class="goal-header">
+                                    <div class="goal-title">{{ goal.title }} <span
+                                            style="font-weight:400; color:#64748b;">({{ goal.subject }})</span></div>
+                                    <div class="goal-actions">
+                                        <button class="action-btn edit-btn" (click)="editGoal(goal)">Edit</button>
+                                        <button class="action-btn delete-btn" (click)="deleteGoal(goal)">Delete</button>
+                                    </div>
+                                </div>
+                                <div class="goal-description">{{ goal.description }}</div>
+                                <div class="goal-meta">
+                                    <span>Target: {{ goal.targetDate | date: 'mediumDate' }}</span>
+                                    <span [style.color]="getStatusColor(goal.status)">[{{ goal.status | titlecase
+                                        }}]</span>
+                                </div>
+                                <div class="goal-progress">
+                                    <div class="progress-header">
+                                        <span class="progress-label">Progress</span>
+                                        <span class="progress-value">{{ goal.progress }}%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" [style.width.%]="goal.progress"
+                                            [style.background]="goal.color"></div>
+                                    </div>
+                                    <input class="progress-slider" type="range" min="0" max="100"
+                                        [value]="goal.progress" (input)="onGoalProgressInput(goal, $event)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- List View -->
+            <div *ngIf="viewMode === 'list'" class="list-view">
+                <h3>Sessions for {{ selectedDate | date: 'fullDate' }}</h3>
+                <div class="sessions-list" *ngIf="filteredSessions.length > 0">
+                    <div class="session-item" *ngFor="let session of filteredSessions; trackBy: trackBySessionId"
+                        [style.borderLeftColor]="session.color">
+                        <div class="session-header">
+                            <div class="session-title">{{ session.title }}</div>
+                            <div class="session-actions">
+                                <button class="action-btn edit-btn" (click)="editSession(session)">Edit</button>
+                                <button class="action-btn delete-btn" (click)="deleteSession(session)">Delete</button>
+                                <button *ngIf="session.status === 'pending'" class="action-btn start-btn"
+                                    (click)="startSession(session)">Start</button>
+                                <button *ngIf="session.status === 'in-progress'" class="action-btn complete-btn"
+                                    (click)="completeSession(session)">Complete</button>
+                            </div>
+                        </div>
+                        <div class="session-details">
+                            <div class="session-meta">
+                                <span><b>{{ session.subject }}</b></span>
+                                <span>{{ session.startTime }} - {{ session.endTime }}</span>
+                                <span [style.color]="getPriorityColor(session.priority)" class="session-status">{{
+                                    session.priority | titlecase }}</span>
+                                <span [style.color]="getStatusColor(session.status)" class="session-status">{{
+                                    session.status | titlecase }}</span>
+                            </div>
+                        </div>
+                        <div class="session-description" *ngIf="session.description">{{ session.description }}</div>
+                    </div>
+                </div>
+                <div *ngIf="filteredSessions.length === 0">No sessions for this date.</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,1 +1,151 @@
-<p>header works!</p>
+<header class="header">
+  <div class="header-container">
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <div class="logo" (click)="navigateTo('/dashboard')">
+        <img src="assets/logo.png" alt="Smart Study Buddy" class="logo-img" />
+        <span class="logo-text">Smart Study Buddy</span>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateTo('/dashboard')" [class.active]="router.url === '/dashboard'">
+            <i class="nav-icon">🏠</i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateTo('/courses')" [class.active]="router.url.includes('/courses')">
+            <i class="nav-icon">📚</i>
+            <span>Courses</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateTo('/study-plans')" [class.active]="router.url.includes('/study-plans')">
+            <i class="nav-icon">📋</i>
+            <span>Study Plans</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateTo('/progress')" [class.active]="router.url.includes('/progress')">
+            <i class="nav-icon">📊</i>
+            <span>Progress</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateTo('/ai-tutor')" [class.active]="router.url.includes('/ai-tutor')">
+            <i class="nav-icon">🤖</i>
+            <span>AI Tutor</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Right Section -->
+    <div class="header-right">
+      <!-- Search Bar -->
+      <div class="search-container">
+        <input type="text" placeholder="Search courses, topics..." class="search-input" />
+        <button class="search-btn">
+          <i class="search-icon">🔍</i>
+        </button>
+      </div>
+
+      <!-- Notifications -->
+      <div class="notification-container">
+        <button class="notification-btn">
+          <i class="notification-icon">🔔</i>
+          <span class="notification-badge">3</span>
+        </button>
+      </div>
+
+      <!-- Profile Dropdown -->
+      <div class="profile-container">
+        <button class="profile-btn" (click)="toggleProfile()">
+          <img [src]="user.avatar" [alt]="user.name" class="profile-avatar" />
+          <span class="profile-name">{{ user.name }}</span>
+          <i class="dropdown-icon" [class.rotated]="isProfileOpen">▼</i>
+        </button>
+        
+        <div class="profile-dropdown" [class.show]="isProfileOpen">
+          <div class="profile-info">
+            <img [src]="user.avatar" [alt]="user.name" class="dropdown-avatar" />
+            <div class="profile-details">
+              <h4>{{ user.name }}</h4>
+              <p>{{ user.email }}</p>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" (click)="navigateTo('/profile')">
+              <i class="item-icon">👤</i> Profile
+            </a></li>
+            <li><a class="dropdown-item" (click)="navigateTo('/settings')">
+              <i class="item-icon">⚙️</i> Settings
+            </a></li>
+            <li><a class="dropdown-item" (click)="navigateTo('/help')">
+              <i class="item-icon">❓</i> Help & Support
+            </a></li>
+            <li><a class="dropdown-item" (click)="navigateTo('/feedback')">
+              <i class="item-icon">💬</i> Feedback
+            </a></li>
+          </ul>
+          <div class="dropdown-divider"></div>
+          <button class="logout-btn" (click)="logout()">
+            <i class="logout-icon">🚪</i> Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-btn" (click)="toggleMenu()">
+        <span class="hamburger" [class.active]="isMenuOpen"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav" [class.show]="isMenuOpen">
+    <div class="mobile-nav-content">
+      <div class="mobile-profile">
+        <img [src]="user.avatar" [alt]="user.name" class="mobile-avatar" />
+        <div class="mobile-profile-info">
+          <h4>{{ user.name }}</h4>
+          <p>{{ user.email }}</p>
+        </div>
+      </div>
+      <ul class="mobile-nav-list">
+        <li><a class="mobile-nav-link" (click)="navigateTo('/dashboard')">
+          <i class="nav-icon">🏠</i> Dashboard
+        </a></li>
+        <li><a class="mobile-nav-link" (click)="navigateTo('/courses')">
+          <i class="nav-icon">📚</i> Courses
+        </a></li>
+        <li><a class="mobile-nav-link" (click)="navigateTo('/study-plans')">
+          <i class="nav-icon">📋</i> Study Plans
+        </a></li>
+        <li><a class="mobile-nav-link" (click)="navigateTo('/progress')">
+          <i class="nav-icon">📊</i> Progress
+        </a></li>
+        <li><a class="mobile-nav-link" (click)="navigateTo('/ai-tutor')">
+          <i class="nav-icon">🤖</i> AI Tutor
+        </a></li>
+        <li><a class="mobile-nav-link" (click)="navigateTo('/profile')">
+          <i class="nav-icon">👤</i> Profile
+        </a></li>
+        <li><a class="mobile-nav-link" (click)="navigateTo('/settings')">
+          <i class="nav-icon">⚙️</i> Settings
+        </a></li>
+        <li><button class="mobile-logout-btn" (click)="logout()">
+          <i class="logout-icon">🚪</i> Logout
+        </button></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" [class.show]="isMenuOpen || isProfileOpen" (click)="closeDropdowns()"></div>
+</header>

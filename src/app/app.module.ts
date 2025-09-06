@@ -1,23 +1,22 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './shared/components/header/header.component';
-import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
-import { LayoutComponent } from './shared/components/layout/layout.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    SidebarComponent,
-    LayoutComponent
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule
   ],

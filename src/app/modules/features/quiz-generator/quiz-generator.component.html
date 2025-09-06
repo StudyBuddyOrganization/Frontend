@@ -1,0 +1,162 @@
+<div class="quiz-generator-container">
+  <div class="container">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-content">
+        <div class="back-btn" routerLink="/dashboard">
+          <i class="back-icon">←</i>
+          <span>Back to Dashboard</span>
+        </div>
+        <div>
+          <h1 class="page-title"><i class="btn-icon">📝</i> Quiz Generator</h1>
+          <p class="page-subtitle">Generate and take <b>AI-powered quizzes</b> on any subject</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Generate Quiz Section -->
+      <div class="generate-section" *ngIf="!currentQuiz">
+        <div class="generate-flex">
+          <div class="generate-form">
+            <h3><i class="btn-icon">✨</i> Generate New Quiz</h3>
+            <div class="form-content">
+              <div class="form-group">
+                <label>Quiz Title</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g., Mathematics Basics" 
+                  [(ngModel)]="newQuiz.title"
+                  class="form-input"
+                />
+              </div>
+              <div class="form-group">
+                <label>Subject</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g., Mathematics, Science, History" 
+                  [(ngModel)]="newQuiz.subject"
+                  class="form-input"
+                />
+              </div>
+              <button 
+                class="generate-btn" 
+                (click)="generateQuiz()" 
+                [disabled]="isGenerating || !newQuiz.title.trim() || !newQuiz.subject.trim()"
+              >
+                <i class="btn-icon" *ngIf="!isGenerating">🎯</i>
+                <i class="btn-icon" *ngIf="isGenerating">⏳</i>
+                {{ isGenerating ? 'Generating...' : 'Generate Quiz' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="divider"><span>or</span></div>
+
+          <!-- Quizzes List -->
+          <div class="quizzes-section">
+            <h3><i class="btn-icon">📚</i> Your Quizzes</h3>
+            <div class="quizzes-grid">
+              <div class="quiz-card" *ngFor="let quiz of quizzes">
+                <div class="quiz-header">
+                  <h4 class="quiz-title"><i class="btn-icon">🗂️</i> {{ quiz.title }}</h4>
+                  <div class="quiz-actions">
+                    <button class="action-btn start" (click)="startQuiz(quiz)">
+                      <i class="btn-icon">▶️</i>
+                      Start
+                    </button>
+                    <button class="action-btn delete" (click)="deleteQuiz(quiz.id)">
+                      <i class="btn-icon">🗑️</i>
+                    </button>
+                  </div>
+                </div>
+                <div class="quiz-details">
+                  <span class="quiz-subject"><i class="btn-icon">📖</i> {{ quiz.subject }}</span>
+                  <span class="quiz-questions"><i class="btn-icon">❓</i> {{ quiz.questions.length }} questions</span>
+                  <span class="quiz-date"><i class="btn-icon">📅</i> {{ quiz.createdAt.toLocaleDateString() }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Taking Section -->
+      <div class="quiz-section" *ngIf="currentQuiz && !showResults">
+        <div class="quiz-header">
+          <h3><i class="btn-icon">📝</i> {{ currentQuiz.title }}</h3>
+          <div class="quiz-progress">
+            <span>Question {{ currentQuestionIndex + 1 }} of {{ currentQuiz.questions.length }}</span>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="((currentQuestionIndex + 1) / (currentQuiz.questions.length || 1)) * 100"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <h4 class="question-text"><i class="btn-icon">❓</i> {{ currentQuestion?.question }}</h4>
+          <div class="options-list">
+            <label 
+              class="option-item" 
+              *ngFor="let option of currentQuestion?.options; let i = index"
+              [class.selected]="selectedAnswers[currentQuestionIndex] === i"
+            >
+              <input 
+                type="radio" 
+                [name]="'question' + currentQuestionIndex"
+                [value]="i"
+                (change)="selectAnswer(i)"
+                [checked]="selectedAnswers[currentQuestionIndex] === i"
+              />
+              <span class="option-text">{{ option }}</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="quiz-navigation">
+          <button 
+            class="nav-btn secondary" 
+            (click)="previousQuestion()" 
+            [disabled]="isFirstQuestion"
+          >
+            ← Previous
+          </button>
+          <button 
+            class="nav-btn primary" 
+            (click)="isLastQuestion ? submitQuiz() : nextQuestion()"
+            [disabled]="selectedAnswers[currentQuestionIndex] === -1"
+          >
+            {{ isLastQuestion ? 'Submit Quiz' : 'Next →' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="results-section" *ngIf="showResults">
+        <div class="results-card">
+          <div class="score-display">
+            <div class="score-circle">
+              <span class="score-number">{{ percentageScore }}%</span>
+              <span class="score-label">Score</span>
+            </div>
+            <h3><i class="btn-icon">🏆</i> Quiz Complete!</h3>
+            <p>You got {{ score }} out of {{ currentQuiz?.questions?.length }} questions correct.</p>
+          </div>
+          <div class="results-actions">
+            <button class="action-btn primary" (click)="resetQuiz()">
+              <i class="btn-icon">🔄</i>
+              Take Another Quiz
+            </button>
+            <button class="action-btn secondary" (click)="resetQuiz()">
+              <i class="btn-icon">📊</i>
+              View All Quizzes
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <!-- Subtle background pattern -->
+  <div class="quiz-bg-pattern"></div>
+</div>

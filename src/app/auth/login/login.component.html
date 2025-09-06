@@ -1,1 +1,129 @@
-<p>login works!</p>
+<div class="page-wrapper">
+  <div class="container">
+    <div class="form-container">
+      <!-- Left panel -->
+      <div class="left-panel">
+        <div class="logo-section">
+          <div class="logo-circle">
+            <img src="assets/logo.png" alt="Logo" class="logo" />
+          </div>
+          <h2 class="brand-name">Smart Study Buddy</h2>
+          <div class="brand-tagline">Your AI-Powered Learning Companion</div>
+        </div>
+        <div class="welcome-content">
+        <h3 class="welcome-back">Welcome Back!</h3>
+        <p class="sub-text">To stay connected with us please login with your personal info</p>
+        </div>
+        <button class="sign-in-button" routerLink="/register">
+          <span>Create Account</span>
+          <i class="arrow-icon">→</i>
+        </button>
+        <div class="features">
+          <div class="feature-item">
+            <div class="feature-icon">📚</div>
+            <span>Smart Study Plans</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🤖</div>
+            <span>AI Tutoring</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">📊</div>
+            <span>Progress Tracking</span>
+          </div>
+        </div>
+        <div class="bottom-links">
+          <a href="#">About Us</a>
+          <span>|</span>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+
+      <!-- Right panel -->
+      <div class="right-panel">
+        <div class="form-header">
+          <h3 class="welcome-text">Welcome Back</h3>
+          <p class="login-sub-text">Sign in to your account to continue your learning journey</p>
+        </div>
+        
+        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="input-icon">📧</i>
+              <input 
+                type="email" 
+                placeholder="Enter your email" 
+                class="input-field" 
+                formControlName="email"
+                [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+                required />
+            </div>
+            <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+              <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
+              <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="input-icon">🔒</i>
+              <input 
+                type="password" 
+                placeholder="Enter your password" 
+                class="input-field" 
+                formControlName="password"
+                [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                required />
+              <button type="button" class="password-toggle">👁️</button>
+            </div>
+            <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+              <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
+              <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
+            </div>
+          </div>
+          
+          <div class="form-options">
+            <label class="remember-me">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Remember me
+            </label>
+            <a class="forgot-password" href="#">Forgot password?</a>
+          </div>
+          
+          <div class="error-message" *ngIf="errorMessage" style="color: red; margin-bottom: 1rem; text-align: center;">
+            {{ errorMessage }}
+          </div>
+          
+          <button type="submit" class="log-in-button" [disabled]="isLoading || loginForm.invalid">
+            <span *ngIf="!isLoading">Sign In</span>
+            <div class="button-loading" *ngIf="isLoading">
+              <div class="spinner"></div>
+            </div>
+          </button>
+        </form>
+        
+        <div class="divider">
+          <span>or</span>
+        </div>
+        
+        <div class="social-login">
+          <button class="social-button google">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIxNy42MzEiIHkxPSI5LjA0IiB4Mj0iLjM2OSIgeTI9IjkuMDQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjNDI4NUY0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMzRBODUzIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImIiIHgxPSIxNi4wODEiIHkxPSIzLjE5IiB4Mj0iNS45MTkiIHkyPSIxNC44MSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIHN0b3AtY29sb3I9IiNGRkE2MDAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRjQzMDAiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYyIgeDE9IjEwLjgxOSIgeTE9IjE3LjYzMSIgeDI9IjEuMTgxIiB5Mj0iLjM2OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIHN0b3AtY29sb3I9IiNGRkE2MDAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRjQzMDAiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZCIgeDE9IjE4IiB5MT0iOSIgeDI9IjAiIHkyPSI5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agc3RvcC1jb2xvcj0iI0ZGMzMzMyIvPjxzdG9wIG9mZnNldD0iLjE3IiBzdG9wLWNvbG9yPSIjRkYzMzMzIi8+PHN0b3Agb2Zmc2V0PSIuMzQiIHN0b3AtY29sb3I9IiNGRkE2MDAiLz48c3RvcCBvZmZzZXQ9Ii42NSIgc3RvcC1jb2xvcj0iI0ZGNzAwMCIvPjxzdG9wIG9mZnNldD0iLjgyIiBzdG9wLWNvbG9yPSIjRkY0MzAwIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkY0MzAwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNjQ5IDkuMjA0OEMxNy42NDkgOC41NjYgMTcuNTkyIDcuOTI3IDE3LjQ3NSA3LjI5OUg5LjE4VjEwLjg0OUgxMy44NDNDMTMuNjQgMTEuODI5IDEzLjAwMiAxMi42NjQgMTIuMDQ1IDEzLjE5N1YxNS4zMThIMTUuNjE2QzE2LjYxOSAxNC4yNTcgMTcuMjQ5IDEyLjg1NyAxNy4yNDkgMTAuODQ5QzE3LjI0OSAxMC4yNDEgMTcuMjI0IDkuNjQ1IDE3LjE0OSA5LjA0OUgxNy42NDlaIiBmaWxsPSJ1cmwoI2EpIi8+PHBhdGggZD0iTTkuMTggMTguMDAxQzExLjQzIDE4LjAwMSAxMy4zOCAxNy4yOTIgMTQuODk2IDE2LjAwNEwxMi4wNDUgMTMuMTk3QzExLjI0MiAxMy43MTcgMTAuMjM0IDE0LjAwMSA5LjE4IDE0LjAwMUM2Ljg3NSAxNC4wMDEgNC44NTcgMTIuNzM0IDQuMTE0IDEwLjg0OUgwLjY5NlYxMy4wMDFDMi4xOTMgMTUuNzU4IDUuNDA0IDE4LjAwMSA5LjE4IDE4LjAwMVoiIGZpbGw9InVybCgjYikiLz48cGF0aCBkPSJNNC4xMTQgMTAuODQ5QzMuODA2IDkuOTkzIDMuODA2IDkuMDA3IDQuMTE0IDguMTUxVjUuOTk5SDAuNjk2QzAuMjUyIDYuOTg5IDAgOC4wNDcgMCA5LjAwMUMwIDEwLjk1MyAwLjI1MiAxMi45MTEgMC42OTYgMTQuMDAxSDQuMTE0WiIgZmlsbD0idXJsKCNjKSIvPjxwYXRoIGQ9Ik05LjE4IDMuNjY5QzEwLjQ0IDMuNjY5IDExLjQ5IDQuMDk3IDEyLjI5IDQuODM0TDE0Ljk0IDEyLjE2N0MxNC4xMDIgMTMuMzI2IDEyLjczIDE0LjAwMSAxMS4xOSAxNC4wMDFDOS45NSAxNC4wMDEgOC44NSAxMy42NzMgOC4wNSAxMi45MzZMOS4xOCAzLjY2OVoiIGZpbGw9InVybCgjZCkiLz48L2c+PC9zdmc+" alt="Google" />
+            Continue with Google
+          </button>
+          <button class="social-button github">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            Continue with GitHub
+          </button>
+        </div>
+        
+        <p class="signup-text">
+          Don't have an account? <a href="/register">Sign Up</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

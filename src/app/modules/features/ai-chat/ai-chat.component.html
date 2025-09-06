@@ -1,0 +1,42 @@
+<div class="ai-chat-container">
+  <div class="container">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-content">
+        <div class="back-btn" routerLink="/dashboard">
+          <i class="back-icon">←</i>
+          <span>Back to Dashboard</span>
+        </div>
+        <h1 class="page-title">AI Study Assistant</h1>
+        <p class="page-subtitle">Get instant help with your studies from our intelligent AI tutor</p>
+      </div>
+    </header>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-avatar"></div>
+        <div class="chat-info">
+          <h3>AI Assistant</h3>
+          <p>Online</p>
+        </div>
+      </div>
+
+      <div class="chat-messages">
+        <div class="message" *ngFor="let message of messages" [class.user]="message.isUser">
+          <div class="message-avatar">{{ message.isUser ? '👤' : '🤖' }}</div>
+          <div class="message-content">
+            <p class="message-text">{{ message.text }}</p>
+            <div class="message-time">{{ message.timestamp.toLocaleTimeString() }}</div>
+          </div>
+        </div>
+
+        <div class="typing-indicator" *ngIf="isTyping">
+          <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+      
+...
+
+Let me reevaluate and take a different approach.

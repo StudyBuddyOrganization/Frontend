@@ -1,1 +1,47 @@
-<p>sidebar works!</p>
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header">
+    <div class="sidebar-logo" (click)="navigateTo('/dashboard')">
+      <img src="assets/logo.png" alt="Logo" class="logo-img" />
+      <span class="logo-text" *ngIf="!isCollapsed">Smart Study Buddy</span>
+    </div>
+    <button class="collapse-btn" (click)="toggleCollapse()">
+      <i class="collapse-icon" [class.rotated]="isCollapsed">◀</i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li class="nav-item" *ngFor="let item of menuItems">
+        <a 
+          class="nav-link" 
+          [class.active]="item.active"
+          (click)="navigateTo(item.route)"
+        >
+          <i class="nav-icon">{{ item.icon }}</i>
+          <span class="nav-text" *ngIf="!isCollapsed">{{ item.title }}</span>
+          <span class="nav-badge" *ngIf="item.badge && !isCollapsed">{{ item.badge }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <ul class="nav-list">
+      <li class="nav-item" *ngFor="let item of bottomMenuItems">
+        <a 
+          class="nav-link" 
+          [class.active]="item.active"
+          (click)="navigateTo(item.route)"
+        >
+          <i class="nav-icon">{{ item.icon }}</i>
+          <span class="nav-text" *ngIf="!isCollapsed">{{ item.title }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Collapsed Tooltips -->
+  <div class="tooltips" *ngIf="isCollapsed">
+    <div class="tooltip" *ngFor="let item of menuItems" [attr.data-tooltip]="item.title"></div>
+  </div>
+</aside>

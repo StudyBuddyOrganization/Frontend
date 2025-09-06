@@ -1,0 +1,84 @@
+<footer class="footer">
+  <div class="footer-container">
+    <!-- Main Footer Content -->
+    <div class="footer-main">
+      <div class="footer-section">
+        <div class="footer-logo">
+          <img src="assets/logo.png" alt="Smart Study Buddy" class="logo-img" />
+          <h3 class="logo-text">Smart Study Buddy</h3>
+        </div>
+        <p class="footer-description">
+          Your AI-powered learning companion that helps you study smarter, 
+          track progress, and achieve your academic goals.
+        </p>
+        <div class="social-links">
+          <a 
+            *ngFor="let social of socialLinks" 
+            [href]="social.url" 
+            class="social-link"
+            [title]="social.name"
+          >
+            <span class="social-icon">{{ social.icon }}</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">Quick Links</h4>
+        <ul class="footer-links">
+          <li *ngFor="let link of quickLinks">
+            <a [href]="link.route" class="footer-link">{{ link.title }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">Support</h4>
+        <ul class="footer-links">
+          <li *ngFor="let link of supportLinks">
+            <a [href]="link.route" class="footer-link">{{ link.title }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">Newsletter</h4>
+        <p class="newsletter-text">
+          Stay updated with the latest study tips and features.
+        </p>
+        <div class="newsletter-form">
+          <input 
+            type="email" 
+            placeholder="Enter your email" 
+            class="newsletter-input"
+          />
+          <button class="newsletter-btn">Subscribe</button>
+        </div>
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="contact-icon">📧</i>
+            <span>support@smartstudybuddy.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="contact-icon">📱</i>
+            <span>+1 (555) 123-4567</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <p class="copyright">
+          © {{ currentYear }} Smart Study Buddy. All rights reserved.
+        </p>
+        <div class="footer-bottom-links">
+          <a href="/privacy" class="bottom-link">Privacy</a>
+          <a href="/terms" class="bottom-link">Terms</a>
+          <a href="/cookies" class="bottom-link">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,151 @@
+<div class="pdf-summary-container">
+  <div class="container">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-content">
+        <div class="back-btn" routerLink="/dashboard">
+          <i class="back-icon">←</i>
+          <span>Back to Dashboard</span>
+        </div>
+        <h1 class="page-title">PDF Summary Generator</h1>
+        <p class="page-subtitle">Upload your PDF and get an AI-powered summary</p>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="content-grid">
+        <!-- Upload Section -->
+        <div class="upload-section">
+          <div class="upload-card">
+            <div class="upload-header">
+              <h3 class="upload-title">Upload PDF Document</h3>
+              <p class="upload-subtitle">Select a PDF file to summarize</p>
+            </div>
+
+            <form [formGroup]="summaryForm" (ngSubmit)="onSubmit()" class="summary-form">
+              <!-- File Upload -->
+              <div class="form-group">
+                <label class="form-label">Choose PDF File</label>
+                <div class="file-upload-area" 
+                     [class.has-file]="selectedFile"
+                     (click)="fileInput.click()">
+                  <input #fileInput 
+                         type="file" 
+                         accept=".pdf"
+                         (change)="onFileSelected($event)"
+                         class="file-input" />
+                  
+                  <div class="upload-content" *ngIf="!selectedFile">
+                    <i class="upload-icon">📄</i>
+                    <p class="upload-text">Click to upload or drag and drop</p>
+                    <p class="upload-hint">PDF files only</p>
+                  </div>
+                  
+                  <div class="file-selected" *ngIf="selectedFile">
+                    <i class="file-icon">📄</i>
+                    <div class="file-info">
+                      <p class="file-name">{{ fileName }}</p>
+                      <p class="file-size">{{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</p>
+                    </div>
+                    <button type="button" class="remove-file" (click)="resetForm()">×</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Summary Length Slider -->
+              <div class="form-group">
+                <label class="form-label">Summary Length</label>
+                <div class="slider-container">
+                  <input type="range" 
+                         formControlName="summaryLength"
+                         min="100" 
+                         max="2000" 
+                         step="50"
+                         class="range-slider" />
+                  <div class="slider-labels">
+                    <span>100</span>
+                    <span class="current-value">{{ summaryForm.get('summaryLength')?.value }}</span>
+                    <span>2000</span>
+                  </div>
+                  <p class="slider-hint">Characters: {{ summaryForm.get('summaryLength')?.value }}</p>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="form-actions">
+                <button type="button" 
+                        class="btn btn-secondary" 
+                        (click)="resetForm()"
+                        [disabled]="isProcessing">
+                  Reset
+                </button>
+                <button type="submit" 
+                        class="btn btn-primary"
+                        [disabled]="!summaryForm.valid || isProcessing">
+                  <span *ngIf="!isProcessing">Generate Summary</span>
+                  <span *ngIf="isProcessing" class="loading-content">
+                    <div class="spinner"></div>
+                    Processing...
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section">
+          <div class="results-card">
+            <div class="results-header">
+              <h3 class="results-title">Summary Results</h3>
+              <div class="results-actions" *ngIf="summaryText">
+                <button class="btn btn-outline" (click)="downloadSummary()">
+                  <i class="download-icon">⬇️</i>
+                  Download
+                </button>
+              </div>
+            </div>
+
+            <div class="results-content">
+              <div class="empty-state" *ngIf="!summaryText && !isProcessing">
+                <i class="empty-icon">📝</i>
+                <p class="empty-text">Your summary will appear here</p>
+                <p class="empty-hint">Upload a PDF and click "Generate Summary"</p>
+              </div>
+
+              <div class="loading-state" *ngIf="isProcessing">
+                <div class="loading-spinner">
+                  <div class="spinner"></div>
+                </div>
+                <p class="loading-text">Analyzing your document...</p>
+                <p class="loading-hint">This may take a few moments</p>
+              </div>
+
+              <div class="summary-content" *ngIf="summaryText && !isProcessing">
+                <div class="summary-stats">
+                  <div class="stat">
+                    <span class="stat-label">Original Length:</span>
+                    <span class="stat-value">{{ extractedText.length }} characters</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Summary Length:</span>
+                    <span class="stat-value">{{ summaryText.length }} characters</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Compression:</span>
+                    <span class="stat-value">{{ ((1 - summaryText.length / extractedText.length) * 100).toFixed(1) }}%</span>
+                  </div>
+                </div>
+                
+                <div class="summary-text">
+                  {{ summaryText }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

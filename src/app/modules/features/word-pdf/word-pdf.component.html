@@ -1,0 +1,87 @@
+<div class="word-pdf-container">
+  <div class="container">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-content">
+        <div class="back-btn" routerLink="/dashboard">
+          <i class="back-icon">←</i>
+          <span>Back to Dashboard</span>
+        </div>
+        <h1 class="page-title">Word to PDF Converter</h1>
+        <p class="page-subtitle">Convert your Word documents to PDF format instantly</p>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Upload Section -->
+      <div class="upload-section">
+        <div class="upload-card" 
+             (dragover)="onDragOver($event)" 
+             (dragleave)="onDragLeave($event)" 
+             (drop)="onDrop($event)"
+             [class.dragover]="isDragOver">
+          <div class="upload-icon">��</div>
+          <h3>Upload Word Document</h3>
+          <p>Drag and drop your .doc or .docx file here, or click to browse</p>
+          <input 
+            type="file" 
+            #fileInput 
+            (change)="onFileSelected($event)"
+            accept=".doc,.docx"
+            class="file-input"
+          />
+          <button class="upload-btn" (click)="fileInput.click()">
+            Choose File
+          </button>
+          
+          <!-- File Info -->
+          <div class="file-info" *ngIf="selectedFile">
+            <i class="file-icon">📄</i>
+            <span class="file-name">{{ selectedFile.name }}</span>
+            <span class="file-size">({{ formatFileSize(selectedFile.size) }})</span>
+          </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section" *ngIf="isConverting">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="conversionProgress"></div>
+          </div>
+          <div class="progress-text">{{ conversionProgress }}% - Converting...</div>
+        </div>
+
+        <!-- Conversion Section -->
+        <div class="conversion-section" *ngIf="selectedFile && !isConverting">
+          <div class="conversion-header">
+            <h3>Ready to Convert</h3>
+            <div class="conversion-actions">
+              <button class="action-btn secondary" (click)="clearFile()">
+                <i class="btn-icon">🗑️</i>
+                Remove File
+              </button>
+              <button class="action-btn primary" (click)="convertToPdf()">
+                <i class="btn-icon">🔄</i>
+                Convert to PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="download-section" *ngIf="convertedFile">
+          <h4>Conversion Complete!</h4>
+          <p>Your Word document has been successfully converted to PDF.</p>
+          <a 
+            [href]="convertedFile" 
+            [download]="getPdfFileName()" 
+            class="download-link"
+          >
+            <i class="btn-icon">⬇️</i>
+            Download PDF
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
