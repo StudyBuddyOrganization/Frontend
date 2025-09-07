@@ -81,6 +81,11 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  updateProfile(updatedUser: User): void {
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    this.currentUserSubject.next(updatedUser);
+  }
+
   private checkStoredAuth(): void {
     const user = localStorage.getItem('user');
     if (user) {

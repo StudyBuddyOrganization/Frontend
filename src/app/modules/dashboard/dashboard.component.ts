@@ -18,7 +18,7 @@ interface FeatureCard {
 })
 export class DashboardComponent implements OnInit {
   user: User | null = null;
-  
+
   stats = [
     { icon: '📚', value: '12', label: 'Courses Completed' },
     { icon: '⏱️', value: '24h', label: 'Study Time' },
@@ -38,21 +38,22 @@ export class DashboardComponent implements OnInit {
     },
     {
       id: 2,
-      title: 'Word to PDF',
-      description: 'Convert Word documents to PDF format instantly',
-      icon: '📝',
-      color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-      status: 'active',
-      route: '/dashboard/features/word-pdf'
-    },
-    {
-      id: 3,
       title: 'AI Chat',
       description: 'Get instant answers and study help from our AI tutor',
       icon: '🤖',
       color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
       status: 'new',
       route: '/dashboard/features/ai-chat'
+    },
+    {
+      id: 3,
+      title: 'Word to PDF',
+      description: 'Convert Word documents to PDF format instantly',
+      icon: '📝',
+      color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      status: 'active',
+      route: '/dashboard/features/word-pdf'
+
     },
     {
       id: 4,
@@ -83,7 +84,7 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {

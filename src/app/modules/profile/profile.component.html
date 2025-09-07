@@ -1,0 +1,276 @@
+<div class="profile-container">
+  <!-- Animated Background Elements -->
+  <div class="background-animation">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+  </div>
+
+  <!-- Header Section -->
+  <div class="profile-header">
+    <div class="header-content">
+      <button class="back-btn" (click)="goToDashboard()">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Dashboard</span>
+      </button>
+      <div class="header-title">
+        <h1 class="title-animate">My Profile</h1>
+        <p class="subtitle-animate">Manage your account settings and preferences</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <!-- Profile Overview Card -->
+    <div class="profile-overview-card card-animate">
+      <div class="profile-avatar-section">
+        <div class="avatar-container">
+          <div class="avatar-ring"></div>
+          <img [src]="user?.avatar" [alt]="user?.name" class="profile-avatar">
+          <div class="avatar-overlay" (click)="changeAvatar()">
+            <i class="fas fa-camera"></i>
+            <span>Change Photo</span>
+          </div>
+          <div class="avatar-status-indicator"></div>
+        </div>
+        <div class="profile-info">
+          <h2 class="name-animate">{{ user?.name }}</h2>
+          <p class="user-email email-animate">{{ user?.email }}</p>
+          <div class="profile-badges">
+            <span class="badge verified badge-animate">
+              <i class="fas fa-check-circle"></i>
+              Verified Account
+            </span>
+            <span class="badge member badge-animate">
+              <i class="fas fa-crown"></i>
+              Premium Member
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card stat-card-1" data-count="24">
+        <div class="stat-icon">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="counter">0</h3>
+          <p>Courses Completed</p>
+          <div class="stat-progress">
+            <div class="progress-bar" style="width: 80%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-2" data-count="156">
+        <div class="stat-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="counter">0</h3>
+          <p>Study Hours</p>
+          <div class="stat-progress">
+            <div class="progress-bar" style="width: 65%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-3" data-count="12">
+        <div class="stat-icon">
+          <i class="fas fa-trophy"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="counter">0</h3>
+          <p>Achievements</p>
+          <div class="stat-progress">
+            <div class="progress-bar" style="width: 90%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-4" data-count="45">
+        <div class="stat-icon">
+          <i class="fas fa-calendar"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="counter">0</h3>
+          <p>Days Streak</p>
+          <div class="stat-progress">
+            <div class="progress-bar" style="width: 75%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+      <!-- Personal Information Card -->
+      <div class="info-card card-animate">
+        <div class="card-header">
+          <div class="header-left">
+            <div class="header-icon">
+              <i class="fas fa-user"></i>
+            </div>
+            <h3>Personal Information</h3>
+          </div>
+          <button 
+            class="edit-btn" 
+            (click)="toggleEdit()"
+            [disabled]="isLoading">
+            <i class="fas fa-edit"></i>
+            {{ isEditing ? 'Cancel' : 'Edit Profile' }}
+          </button>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="profile-form">
+          <div class="form-group">
+            <label for="name">
+              <i class="fas fa-user"></i>
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              [readonly]="!isEditing"
+              [class.readonly]="!isEditing"
+              placeholder="Enter your full name">
+            <div class="error-message" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+              <span *ngIf="profileForm.get('name')?.errors?.['required']">Name is required</span>
+              <span *ngIf="profileForm.get('name')?.errors?.['minlength']">Name must be at least 2 characters</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">
+              <i class="fas fa-envelope"></i>
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              [readonly]="!isEditing"
+              [class.readonly]="!isEditing"
+              placeholder="Enter your email address">
+            <div class="error-message" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+              <span *ngIf="profileForm.get('email')?.errors?.['required']">Email is required</span>
+              <span *ngIf="profileForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+            </div>
+          </div>
+
+          <div class="form-actions" *ngIf="isEditing">
+            <button 
+              type="button" 
+              class="cancel-btn" 
+              (click)="toggleEdit()"
+              [disabled]="isLoading">
+              <i class="fas fa-times"></i>
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="save-btn"
+              [disabled]="profileForm.invalid || isLoading">
+              <span *ngIf="isLoading" class="spinner"></span>
+              <i *ngIf="!isLoading" class="fas fa-save"></i>
+              {{ isLoading ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+
+        <div class="success-message" *ngIf="showSuccessMessage">
+          <i class="fas fa-check-circle"></i>
+          <span>Profile updated successfully!</span>
+        </div>
+      </div>
+
+      <!-- Preferences Card -->
+      <div class="preferences-card card-animate">
+        <div class="card-header">
+          <div class="header-left">
+            <div class="header-icon">
+              <i class="fas fa-cog"></i>
+            </div>
+            <h3>Preferences</h3>
+          </div>
+        </div>
+        
+        <div class="preference-item">
+          <div class="preference-info">
+            <h4>Email Notifications</h4>
+            <p>Receive updates about your courses and achievements</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="preference-item">
+          <div class="preference-info">
+            <h4>Study Reminders</h4>
+            <p>Get daily reminders to maintain your study streak</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="preference-item">
+          <div class="preference-info">
+            <h4>Dark Mode</h4>
+            <p>Switch to dark theme for better night studying</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Account Actions Card -->
+      <div class="account-actions-card card-animate">
+        <div class="card-header">
+          <div class="header-left">
+            <div class="header-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Account Security</h3>
+          </div>
+        </div>
+        
+        <div class="security-actions">
+          <button class="security-btn">
+            <i class="fas fa-key"></i>
+            <div class="btn-content">
+              <h4>Change Password</h4>
+              <p>Update your account password</p>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          
+          <button class="security-btn">
+            <i class="fas fa-mobile-alt"></i>
+            <div class="btn-content">
+              <h4>Two-Factor Authentication</h4>
+              <p>Add an extra layer of security</p>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          
+          <button class="security-btn logout" (click)="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <div class="btn-content">
+              <h4>Sign Out</h4>
+              <p>Sign out of your account</p>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

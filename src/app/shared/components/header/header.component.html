@@ -65,17 +65,17 @@
       <!-- Profile Dropdown -->
       <div class="profile-container">
         <button class="profile-btn" (click)="toggleProfile()">
-          <img [src]="user.avatar" [alt]="user.name" class="profile-avatar" />
-          <span class="profile-name">{{ user.name }}</span>
+          <img [src]="user?.avatar" [alt]="user?.name" class="profile-avatar" />
+          <span class="profile-name">{{ user?.name }}</span>
           <i class="dropdown-icon" [class.rotated]="isProfileOpen">▼</i>
         </button>
         
         <div class="profile-dropdown" [class.show]="isProfileOpen">
           <div class="profile-info">
-            <img [src]="user.avatar" [alt]="user.name" class="dropdown-avatar" />
+            <img [src]="user?.avatar" [alt]="user?.name" class="dropdown-avatar" />
             <div class="profile-details">
-              <h4>{{ user.name }}</h4>
-              <p>{{ user.email }}</p>
+              <h4>{{ user?.name }}</h4>
+              <p>{{ user?.email }}</p>
             </div>
           </div>
           <div class="dropdown-divider"></div>
@@ -111,10 +111,10 @@
   <div class="mobile-nav" [class.show]="isMenuOpen">
     <div class="mobile-nav-content">
       <div class="mobile-profile">
-        <img [src]="user.avatar" [alt]="user.name" class="mobile-avatar" />
+        <img [src]="user?.avatar" [alt]="user?.name" class="mobile-avatar" />
         <div class="mobile-profile-info">
-          <h4>{{ user.name }}</h4>
-          <p>{{ user.email }}</p>
+          <h4>{{ user?.name }}</h4>
+          <p>{{ user?.email }}</p>
         </div>
       </div>
       <ul class="mobile-nav-list">
