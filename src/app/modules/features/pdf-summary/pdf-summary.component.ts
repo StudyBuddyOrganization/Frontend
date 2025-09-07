@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+// import { HttpClient } from '@angular/common/http'; // Uncomment when backend API is ready
 
 @Component({
   selector: 'app-pdf-summary',
@@ -50,11 +51,27 @@ export class PdfSummaryComponent implements OnInit {
 
       // Simulate API call delay
       setTimeout(() => {
+        // this.sendToBackendAndSummarize(); // Uncomment when backend API is ready
         this.generateSummary();
         this.isProcessing = false;
       }, 2000);
     }
   }
+
+  // This method will be used to send data to backend and get summary (Uncomment and implement when backend API is ready)
+  // sendToBackendAndSummarize(): void {
+  //   const formData = new FormData();
+  //   formData.append('file', this.selectedFile!);
+  //   formData.append('summaryLength', this.summaryForm.get('summaryLength')?.value);
+  //   this.http.post<{ summary: string }>('YOUR_BACKEND_API_URL', formData)
+  //     .subscribe(response => {
+  //       this.summaryText = response.summary;
+  //       this.isProcessing = false;
+  //     }, error => {
+  //       // Handle error
+  //       this.isProcessing = false;
+  //     });
+  // }
 
   generateSummary(): void {
     const length = this.summaryForm.get('summaryLength')?.value;

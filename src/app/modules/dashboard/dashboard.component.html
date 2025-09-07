@@ -6,7 +6,7 @@
         <h1 class="welcome-title">Welcome back, {{ user?.name }}!</h1>
         <p class="welcome-subtitle">Here's what you can do today</p>
       </div>
-      <div class="user-profile">
+      <div class="user-profile" routerLink="/profile">
         <img [src]="user?.avatar" [alt]="user?.name" class="user-avatar" />
         <div class="user-info">
           <span class="user-name">{{ user?.name }}</span>

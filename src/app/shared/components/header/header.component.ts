@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService, User } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -9,15 +10,18 @@ import { Router } from '@angular/router';
 export class HeaderComponent implements OnInit {
   isMenuOpen = false;
   isProfileOpen = false;
-  user = {
-    name: 'Mr.Ansari',
-    email: 'john.doe@example.com',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'
-  };
+  user: User | null = null;
 
-  constructor(public router: Router) {}
+  constructor(
+    public router: Router,
+    private authService: AuthService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.authService.currentUser$.subscribe((user: User | null) => {
+      this.user = user;
+    });
+  }
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
@@ -30,12 +34,11 @@ export class HeaderComponent implements OnInit {
   navigateTo(route: string): void {
     this.router.navigate([route]);
     this.isMenuOpen = false;
+    this.isProfileOpen = false;
   }
 
   logout(): void {
-    // Implement logout logic
-    console.log('Logout clicked');
-    this.router.navigate(['/auth/login']);
+    this.authService.logout();
   }
 
   closeDropdowns(): void {
