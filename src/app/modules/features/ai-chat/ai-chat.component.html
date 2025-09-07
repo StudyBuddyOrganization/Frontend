@@ -3,10 +3,10 @@
     <!-- Header -->
     <header class="page-header">
       <div class="header-content">
-        <div class="back-btn" routerLink="/dashboard">
-          <i class="back-icon">←</i>
+        <a class="back-btn" routerLink="/dashboard" aria-label="Back to Dashboard">
+          <i class="back-icon" aria-hidden="true">←</i>
           <span>Back to Dashboard</span>
-        </div>
+        </a>
         <h1 class="page-title">AI Study Assistant</h1>
         <p class="page-subtitle">Get instant help with your studies from our intelligent AI tutor</p>
       </div>
@@ -15,28 +15,117 @@
     <!-- Chat Container -->
     <div class="chat-container">
       <div class="chat-header">
-        <div class="chat-avatar"></div>
+        <div class="chat-avatar" title="AI Assistant Avatar">
+          <span aria-hidden="true">🤖</span>
+        </div>
         <div class="chat-info">
           <h3>AI Assistant</h3>
           <p>Online</p>
+          <!-- 🔧 Backend Status Indicator -->
+          <div class="backend-status" [class.mock-mode]="!USE_BACKEND_API" role="status" aria-live="polite">
+            <i class="fas fa-circle" aria-hidden="true"></i>
+            <span>{{ USE_BACKEND_API ? 'Backend API' : 'Mock Mode' }}</span>
+          </div>
         </div>
       </div>
 
-      <div class="chat-messages">
-        <div class="message" *ngFor="let message of messages" [class.user]="message.isUser">
-          <div class="message-avatar">{{ message.isUser ? '👤' : '🤖' }}</div>
+      <div class="chat-messages" role="log">
+        <div class="message" *ngFor="let message of messages" [class.user]="message.isUser" role="article" [attr.aria-label]="message.isUser ? 'Your message' : 'AI Assistant message'">
+          <div class="message-avatar" [attr.aria-label]="message.isUser ? 'Your avatar' : 'AI Assistant avatar'">
+            <span aria-hidden="true">{{ message.isUser ? '👤' : '🤖' }}</span>
+          </div>
           <div class="message-content">
             <p class="message-text">{{ message.text }}</p>
-            <div class="message-time">{{ message.timestamp.toLocaleTimeString() }}</div>
+            <div class="message-time" title="Message sent at {{ message.timestamp.toLocaleTimeString() }}">{{ message.timestamp.toLocaleTimeString() }}</div>
           </div>
         </div>
 
-        <div class="typing-indicator" *ngIf="isTyping">
-          <div class="typing-dots">
+        <div class="typing-indicator" *ngIf="isTyping" role="status" aria-live="polite">
+          <div class="typing-dots" aria-hidden="true">
             <div class="typing-dot"></div>
             <div class="typing-dot"></div>
             <div class="typing-dot"></div>
-      
-...
+          </div>
+          <span class="typing-text">AI is typing...</span>
+        </div>
 
-Let me reevaluate and take a different approach.
+        <!-- Error Message -->
+        <div class="error-message" *ngIf="errorMessage" role="alert" aria-live="assertive">
+          <div class="error-content">
+            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+            <span>{{ errorMessage }}</span>
+            <button class="retry-btn" (click)="retryLastMessage()" aria-label="Retry sending the last message">
+              <i class="fas fa-redo" aria-hidden="true"></i>
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input -->
+      <div class="chat-input">
+        <div class="input-container">
+          <div class="input-wrapper">
+            <textarea
+              [(ngModel)]="newMessage"
+              (keypress)="onKeyPress($event)"
+              placeholder="Ask me anything about your studies..."
+              class="message-input"
+              rows="1"
+              #messageInput
+              [disabled]="isTyping"
+              aria-label="Type your message here"
+              autocomplete="off"
+              autocorrect="on"
+              autocapitalize="sentences"
+              spellcheck="true">
+            </textarea>
+            <div class="input-actions">
+              <button 
+                class="action-btn" 
+                title="Attach file"
+                (click)="attachFile()"
+                aria-label="Attach file"
+                type="button">
+                <i class="fas fa-paperclip" aria-hidden="true"></i>
+              </button>
+              <button 
+                class="action-btn" 
+                title="Voice input"
+                (click)="startVoiceInput()"
+                aria-label="Start voice input"
+                type="button"
+                [class.recording]="isRecording">
+                <i class="fas fa-microphone" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <button 
+            class="send-btn" 
+            (click)="sendMessage()"
+            [disabled]="!newMessage.trim() || isTyping"
+            aria-label="Send message"
+            type="button">
+            <i class="fas fa-paper-plane" *ngIf="!isTyping" aria-hidden="true"></i>
+            <div class="spinner" *ngIf="isTyping" aria-hidden="true"></div>
+            <span *ngIf="!isTyping">Send</span>
+            <span *ngIf="isTyping">Sending...</span>
+          </button>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions" role="group">
+          <button 
+            class="quick-action-btn" 
+            *ngFor="let action of quickActions"
+            (click)="sendQuickMessage(action.text)"
+            [attr.aria-label]="action.label"
+            type="button">
+            <i [class]="action.icon" aria-hidden="true"></i>
+            <span>{{ action.label }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
